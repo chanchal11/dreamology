@@ -46,3 +46,10 @@ nav {
   margin-right: auto;
   max-width: 350px;
 }
+
+.ex-modal {
+  max-width: min-content;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+}
