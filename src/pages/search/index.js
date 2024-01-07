@@ -15,6 +15,9 @@ export default function index() {
         // alert('Clicked');
         axios.get('http://localhost:5000/find_related_dreams?user_input=' + userInput).then((res) => {
             console.log(res.data);
+            if(res.data.related_dreams.length == 0 ){
+                alert('No related dreams found');
+            }
             setDreams(res.data.related_dreams);
         });
     };
