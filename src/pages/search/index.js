@@ -5,20 +5,21 @@ import ModalComponent from '../../components/Modal';
 import axios from "axios";
 import { useState } from "react";
 
-export default function index() {
-    const [userInput, setUserInput] = useState('');
-    const [ dreams, setDreams ] = useState([]);
+export default function index(props) {
+    const [userInput, setUserInput] = useState(props.user_input);
+    const [ dreams, setDreams ] = useState(props.dreams);
     const [open, setOpen] = useState(false);
     const [selectedDream, setSelectedDream] = useState({});
     const handleSubmit = (e) => {
         e.preventDefault();
-        // alert('Clicked');
-        axios.get('http://localhost:5000/find_related_dreams?user_input=' + userInput).then((res) => {
+  
+        axios.get(`${props.DREAMS_HOST}/find_related_dreams?user_input=${userInput}`).then((res) => {
             console.log(res.data);
             if(res.data.related_dreams.length == 0 ){
                 alert('No related dreams found');
             }
             setDreams(res.data.related_dreams);
+            history.pushState(null, null, '?user_input=' + userInput);
         });
     };
 
@@ -49,4 +50,25 @@ export default function index() {
       <ModalComponent open={open} handleClose={() => setOpen(false)} dream={selectedDream} />
     </div>}
     </div>
+}
+export async function getServerSideProps(context) {
+  const { user_input } = context.query;
+
+  try {
+    const res = await fetch(`${process.env.DREAMS_HOST}/find_related_dreams?user_input=${user_input}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to fetch related dreams');
+    }
+
+    return {
+      props: { dreams: data.related_dreams, user_input, DREAMS_HOST: process.env.DREAMS_HOST },
+    };
+  } catch (error) {
+    console.error('Error fetching related dreams:', error);
+    return {
+      props: { dreams: [], error: 'Failed to fetch related dreams' },
+    };
+  }
 }
