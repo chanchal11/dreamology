@@ -5,7 +5,7 @@ import ModalComponent from '../../components/Modal';
 import axios from "axios";
 import { useState } from "react";
 
-export default function index(props) {
+export default function Index(props) {
     const [userInput, setUserInput] = useState(props.user_input);
     const [ dreams, setDreams ] = useState(props.dreams);
     const [open, setOpen] = useState(false);
