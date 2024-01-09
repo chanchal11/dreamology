@@ -52,7 +52,7 @@ export default function index(props) {
     </div>
 }
 export async function getServerSideProps(context) {
-  const { user_input } = context.query;
+  const { user_input='' } = context.query;
 
   try {
     const res = await fetch(`${process.env.DREAMS_HOST}/find_related_dreams?user_input=${user_input}`);
