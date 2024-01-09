@@ -52,10 +52,10 @@ export default function index(props) {
     </div>
 }
 export async function getServerSideProps(context) {
-  const { user_input='' } = context.query;
+  const { user_input } = context.query;
 
   try {
-    const res = await fetch(`${process.env.DREAMS_HOST}/find_related_dreams?user_input=${user_input}`);
+    const res = await fetch(`${process.env.DREAMS_HOST}/find_related_dreams?user_input=${user_input || ''}`);
     const data = await res.json();
 
     if (!res.ok) {
@@ -63,12 +63,12 @@ export async function getServerSideProps(context) {
     }
 
     return {
-      props: { dreams: data.related_dreams, user_input, DREAMS_HOST: process.env.DREAMS_HOST },
+      props: { dreams: data.related_dreams, user_input: user_input || '', DREAMS_HOST: process.env.DREAMS_HOST },
     };
   } catch (error) {
     console.error('Error fetching related dreams:', error);
     return {
-      props: { dreams: [], error: 'Failed to fetch related dreams' },
+      props: { dreams: [], error: error.message || 'Failed to fetch related dreams',  user_input: user_input || '', DREAMS_HOST: process.env.DREAMS_HOST },
     };
   }
 }
